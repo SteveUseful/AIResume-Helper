@@ -1,6 +1,3 @@
-# Developed by dnoobnerd [https://dnoobnerd.netlify.app]    Made with Streamlit
-
-
 ###### Packages Used ######
 import streamlit as st # core package used in this project
 import pandas as pd
@@ -33,27 +30,49 @@ nltk.download('stopwords')
 
 
 ###### Preprocessing functions ######
-
+"""
+Generate a downloadable CSV link for an input DataFrame.
+This function converts a given DataFrame to CSV format, encodes it into base64 to ensure proper formatting and create a web-friendly download link, 
+which can be embedded in an HTML document.
+Parameters:
+- df (pd.DataFrame): The DataFrame to be converted into a CSV download link.
+- filename (str): The name of the file when downloaded.#     - text (str): The text to be displayed as the download link.
+Returns:
+- str: An 'a' tag element as a string that allows for downloading the CSV when clicked.
+"""
 
 def get_csv_download_link(df, filename, text):
+    # Convert the DataFrame to CSV format without the index
     csv = df.to_csv(index=False)
+    # Encode the CSV string to base64 to make it web-safe
     b64 = base64.b64encode(csv.encode()).decode()
+     # Create the HTML anchor ('a') tag to serve as the downloadable link
     href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">{text}</a>'
     return href
-
+    
+"""
+ Read the content of a PDF file and return it as a text string.
+    This function uses the PDFResourceManager and PDFPageInterpreter from the PDFMiner library
+    to process each page of the PDF file and extract the text.
+    Args:
+    - file_path (str): The file system path to the PDF file.
+    Returns:
+    - str: The extracted text from the PDF.
+"""
 def pdf_reader(file_path):
     with open(file_path, 'rb') as fh:
+        # Initialize PDF resource manager, converter, and interpreter
         resource_manager = PDFResourceManager()
         fake_file_handle = io.StringIO()
         converter = TextConverter(resource_manager, fake_file_handle, laparams=LAParams())
         page_interpreter = PDFPageInterpreter(resource_manager, converter)
-        
+        # Process each page from the PDF and extract text
         for page in PDFPage.get_pages(fh, caching=True, check_extractable=True):
             page_interpreter.process_page(page)
             
         text = fake_file_handle.getvalue()
 
-        # close open handles
+        # Clean up converter and file handle resources
         converter.close()
         fake_file_handle.close()
 
