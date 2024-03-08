@@ -193,7 +193,7 @@ def run():
     st.sidebar.markdown('''
         ''', unsafe_allow_html=True) # Empty markdown for spacing
 
-# Database Initialization: Executes SQL to create a new database 'CV' if it doesn't already exist.
+    # Database Initialization: Executes SQL to create a new database 'CV' if it doesn't already exist.
     db_sql = """CREATE DATABASE IF NOT EXISTS CV;""" 
     cursor.execute(db_sql)
     DB_table_name = 'user_data'
@@ -227,8 +227,8 @@ def run():
                 """
     cursor.execute(table_sql) # Execute the SQL to create the table
 
-# User Feedback Table Creation: Constructs a new table 'user_feedback' in the database if it doesn't exist, 
-# designed to store feedback entries with fields for name, email, score, comments, and timestamp.
+    # User Feedback Table Creation: Constructs a new table 'user_feedback' in the database if it doesn't exist, 
+    # designed to store feedback entries with fields for name, email, score, comments, and timestamp.
     DBf_table_name = 'user_feedback'
     tablef_sql = "CREATE TABLE IF NOT EXISTS " + DBf_table_name + """
                     (ID INT NOT NULL AUTO_INCREMENT,
@@ -243,10 +243,10 @@ def run():
     cursor.execute(tablef_sql) # Execute the SQL to create the table
 
 
-# Client-Side Interface: "Submit Resume" Feature
-# Provides an interactive interface for users to submit their resumes. It captures essential information 
-# including the user's name, email, contact number, and generates a unique security token for the session. 
-# Additionally, it collects geolocation and system information to enhance user experience and security.
+    # Client-Side Interface: "Submit Resume" Feature
+    # Provides an interactive interface for users to submit their resumes. It captures essential information 
+    # including the user's name, email, contact number, and generates a unique security token for the session. 
+    # Additionally, it collects geolocation and system information to enhance user experience and security.
     if choice == 'Submit Resume':
         st.header("**Submit Your Resume**")
         st.markdown("<div class='info-box'>Please fill in your details, let's start with your resume.</div>", unsafe_allow_html=True)
@@ -268,7 +268,7 @@ def run():
         country = address.get('country', '')  
 
 
-# Resume Upload Prompt: Styled section for users to upload their resume, featuring customized text alignment and color for enhanced visibility.
+        # Resume Upload Prompt: Styled section for users to upload their resume, featuring customized text alignment and color for enhanced visibility.
         st.markdown("<h5 style='text-align: left; color: #021659;'>Let's start with your resume.</h5>", unsafe_allow_html=True) # Customized text alignment and color
         pdf_file = st.file_uploader("*Please use Resumes in PDF format only.", type=["pdf"]) # File uploader for PDF resumes
         if pdf_file is not None:
@@ -280,10 +280,10 @@ def run():
                 f.write(pdf_file.getbuffer()) # Write the PDF buffer to the file
             show_pdf(save_image_path) # Display the uploaded PDF in the app
 
-# Resume Data Extraction and Display:
-# Utilizes ResumeParser for comprehensive data extraction from the uploaded resume, then presents a quick overview of the user's information.
-# The displayed info includes the user's name, email, contact number (if available), highest degree (if available), and the total number of pages in the resume.
-# This section is designed to provide immediate feedback and validation of the extracted data, enhancing user engagement with stylized presentation.
+            # Resume Data Extraction and Display:
+            # Utilizes ResumeParser for comprehensive data extraction from the uploaded resume, then presents a quick overview of the user's information.
+            # The displayed info includes the user's name, email, contact number (if available), highest degree (if available), and the total number of pages in the resume.
+            # This section is designed to provide immediate feedback and validation of the extracted data, enhancing user engagement with stylized presentation.
             resume_data = ResumeParser(save_image_path).get_extracted_data()
             if resume_data:
                 resume_text = pdf_reader(save_image_path) # Extract text from the uploaded PDF
@@ -303,29 +303,26 @@ def run():
                     st.markdown(f"<div class='bubbly-text'>Resume Pages: {resume_data['no_of_pages']}</div>", unsafe_allow_html=True) # Display the total number of pages in the resume
                 st.markdown("---") # Horizontal rule for separation
 
-                ## Predicting Candidate Experience Level 
+                # Candidate Experience Level Prediction:
+                # Determines the candidate's level (NA, Fresher, Intermediate, Experienced) based on resume analysis, 
+                # particularly looking at the number of pages and key terms like 'Internship' and 'Experience'.
 
-                ### Trying with different possibilities
                 cand_level = ''
                 if resume_data['no_of_pages'] < 1:                
                     cand_level = "NA"
-                    st.markdown( '''<h4 style='text-align: left; color: #d73b5c;'>You are at Fresher level!</h4>''',unsafe_allow_html=True)
-                
-                #### if internship then intermediate level
-                elif 'INTERNSHIP' in resume_text:
-                    cand_level = "Intermediate"
+                    st.markdown( '''<h4 style='text-align: left; color: #d73b5c;'>You are at Fresher level!</h4>''',unsafe_allow_html=True) # Display the candidate's experience level
+                elif 'INTERNSHIP' in resume_text: # Check for 'INTERNSHIP' in the resume text
+                    cand_level = "Intermediate" # Intermediate level if the resume contains 'INTERNSHIP'
+                    st.markdown('''<h4 style='text-align: left; color: #1ed760;'>You are at intermediate level!</h4>''',unsafe_allow_html=True) 
+                elif 'INTERNSHIPS' in resume_text: # Check for 'INTERNSHIPS' in the resume text
+                    cand_level = "Intermediate" # Intermediate level if the resume contains 'INTERNSHIPS'
                     st.markdown('''<h4 style='text-align: left; color: #1ed760;'>You are at intermediate level!</h4>''',unsafe_allow_html=True)
-                elif 'INTERNSHIPS' in resume_text:
-                    cand_level = "Intermediate"
+                elif 'Internship' in resume_text: # Check for 'Internship' in the resume text
+                    cand_level = "Intermediate" # Intermediate level if the resume contains 'Internship'
                     st.markdown('''<h4 style='text-align: left; color: #1ed760;'>You are at intermediate level!</h4>''',unsafe_allow_html=True)
-                elif 'Internship' in resume_text:
-                    cand_level = "Intermediate"
+                elif 'Internships' in resume_text:# Check for 'Internships' in the resume text
+                    cand_level = "Intermediate" # Intermediate level if the resume contains 'Internships'. Continue on through the loop.
                     st.markdown('''<h4 style='text-align: left; color: #1ed760;'>You are at intermediate level!</h4>''',unsafe_allow_html=True)
-                elif 'Internships' in resume_text:
-                    cand_level = "Intermediate"
-                    st.markdown('''<h4 style='text-align: left; color: #1ed760;'>You are at intermediate level!</h4>''',unsafe_allow_html=True)
-                
-                #### if Work Experience/Experience then Experience level
                 elif 'EXPERIENCE' in resume_text:
                     cand_level = "Experienced"
                     st.markdown('''<h4 style='text-align: left; color: #fba171;'>You are at experience level!''',unsafe_allow_html=True)
@@ -343,49 +340,50 @@ def run():
                     st.markdown('''<h4 style='text-align: left; color: #fba171;'>You are at Fresher level!!''',unsafe_allow_html=True)
 
 
-                ## Skills Analyzing and Recommendation
-                st.subheader("**Skills Recommendation 💡**")
-                
-                ### Current Analyzed Skills
+                # Skills Analysis and Recommendations:
+                # Displays analyzed skills from the candidate's resume and suggests improvements or additions.
+                # It evaluates existing skills against predefined keyword sets to recommend areas for development 
+                # across various domains such as Data Science, Web Development, Android/iOS Development, and UI/UX Design.
+
+                st.subheader("** Recommended Skills to Add**")
                 if 'skills' in resume_data and resume_data['skills']:
-                    st.markdown("### Your Current Skills")
+                    st.markdown("### Current Skills")
                 for skill in resume_data['skills']:
                     st.markdown(f"<div class='skill-tag'>{skill}</div>", unsafe_allow_html=True)
                 else:
                     st.markdown("<div class='info-box'>We couldn't find skills in your resume, or it's not in the expected format.</div>", unsafe_allow_html=True)
-
-
-                ### Keywords for Recommendations
+                    
+                # Skill Keywords for Prediction
                 ds_keyword = ['tensorflow','keras','pytorch','machine learning','deep Learning','flask','streamlit']
                 web_keyword = ['react', 'django', 'node jS', 'react js', 'php', 'laravel', 'magento', 'wordpress','javascript', 'angular js', 'C#', 'Asp.net', 'flask']
                 android_keyword = ['android','android development','flutter','kotlin','xml','kivy']
                 ios_keyword = ['ios','ios development','swift','cocoa','cocoa touch','xcode']
                 uiux_keyword = ['ux','adobe xd','figma','zeplin','balsamiq','ui','prototyping','wireframes','storyframes','adobe photoshop','photoshop','editing','adobe illustrator','illustrator','adobe after effects','after effects','adobe premier pro','premier pro','adobe indesign','indesign','wireframe','solid','grasp','user research','user experience']
                 n_any = ['english','communication','writing', 'microsoft office', 'leadership','customer management', 'social media']
-                
-                ### Skill Recommendations Starts                
+
+                # Recommended Skills and Courses              
                 recommended_skills = []
                 reco_field = ''
                 rec_course = ''
 
-                ### condition starts to check skills from keywords and predict field
+                # Skills Recommendation Engine:
+                # Analyzes the candidate's skills against key industry areas (Data Science, Web Development, Android/iOS Development, UI/UX Design) to identify and recommend missing skills.
+                # Provides personalized course recommendations to enhance the candidate's skillset and job prospects in their identified field.
+                # Utilizes conditional checks against predefined keywords for field-specific skills analysis and recommendations.
+
                 for i in resume_data['skills']:
-                
-                    #### Data science recommendation
-                    if i.lower() in ds_keyword:
+                    if i.lower() in ds_keyword: # Check for Data Science keywords in the resume
                         print(i.lower())
                         reco_field = 'Data Science'
-                        st.success("**Data Science**")
-                        recommended_skills = ['Data Visualization','Predictive Analysis','Statistical Modeling','Data Mining','Clustering & Classification','Data Analytics','Quantitative Analysis','Web Scraping','ML Algorithms','Keras','Pytorch','Probability','Scikit-learn','Tensorflow',"Flask",'Streamlit']
-                        recommended_keywords = st_tags(label='### Recommended skills for you.',
-                        text='Recommended skills generated from System',value=recommended_skills,key = '2')
+                        st.success("**Data Science**") # Display the predicted field
+                        recommended_skills = ['Data Visualization','Predictive Analysis','Statistical Modeling','Data Mining','Clustering & Classification','Data Analytics','Quantitative Analysis','Web Scraping','ML Algorithms','Keras','Pytorch','Probability','Scikit-learn','Tensorflow',"Flask",'Streamlit'] # Recommended skills for Data Science
+                        recommended_keywords = st_tags(label='### Recommended skills for you.', 
+                        text='Recommended skills generated from System',value=recommended_skills,key = '2') # Display recommended skills
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>Adding this skills to resume will boost🚀 the chances of getting a Job</h5>''',unsafe_allow_html=True)
-                        # course recommendation
-                        rec_course = course_recommender(ds_course)
+                        rec_course = course_recommender(ds_course) # Display course recommendations
                         break
 
-                    #### Web development recommendation
-                    elif i.lower() in web_keyword:
+                    elif i.lower() in web_keyword: # Check for Web Development keywords in the resume
                         print(i.lower())
                         reco_field = 'Web Development'
                         st.success("**Web Development**")
@@ -396,9 +394,8 @@ def run():
                         # course recommendation
                         rec_course = course_recommender(web_course)
                         break
-
-                    #### Android App Development
-                    elif i.lower() in android_keyword:
+                    
+                    elif i.lower() in android_keyword: # Check for Android Development keywords in the resume
                         print(i.lower())
                         reco_field = 'Android Development'
                         st.success("**Android App Development**")
@@ -409,9 +406,8 @@ def run():
                         # course recommendation
                         rec_course = course_recommender(android_course)
                         break
-
-                    #### IOS App Development
-                    elif i.lower() in ios_keyword:
+                    
+                    elif i.lower() in ios_keyword: # Check for IOS Development keywords in the resume
                         print(i.lower())
                         reco_field = 'IOS Development'
                         st.success("**IOS App Development**")
@@ -422,9 +418,8 @@ def run():
                         # course recommendation
                         rec_course = course_recommender(ios_course)
                         break
-
-                    #### Ui-UX Recommendation
-                    elif i.lower() in uiux_keyword:
+                    
+                    elif i.lower() in uiux_keyword: # Check for UI/UX Development keywords in the resume
                         print(i.lower())
                         reco_field = 'UI-UX Development'
                         st.success("**UI-UX Development**")
@@ -436,8 +431,7 @@ def run():
                         rec_course = course_recommender(uiux_course)
                         break
 
-                    #### For Not Any Recommendations
-                    elif i.lower() in n_any:
+                    elif i.lower() in n_any: # Check for General keywords in the resume
                         print(i.lower())
                         reco_field = 'NA'
                         st.warning("** Currently our tool only predicts and recommends for Data Science, Web, Android, IOS and UI/UX Development**")
@@ -450,24 +444,30 @@ def run():
                         break
 
 
-                ## Resume Scorer & Resume Writing Tips
+                # Resume Scorer & Writing Tips:
+                # Evaluates the candidate's resume content and structure to provide personalized scoring and improvement suggestions.
+                # Offers actionable tips and ideas to enhance the quality and effectiveness of the candidate's resume.
+
                 st.subheader("**Resume Tips & Ideas 🥂**")
                 resume_score = 0
                 
-                ### Predicting Whether these key points are added to the resume
-                if 'Objective' or 'Summary' in resume_text:
+                # Predicting Key Resume Points & Scoring:
+                # Analyzes the presence of essential resume elements such as Objective, Education, Experience, Skills, etc.
+                # Calculates a resume score based on the presence of these key points, providing feedback and suggestions for improvement.
+
+                if 'Objective' or 'Summary' in resume_text: # Check for 'Objective' or 'Summary' in the resume text
                     resume_score = resume_score+6
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added Objective/Summary</h4>''',unsafe_allow_html=True)                
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add your career objective, it will give your career intension to the Recruiters.</h4>''',unsafe_allow_html=True)
 
-                if 'Education' or 'School' or 'College'  in resume_text:
+                if 'Education' or 'School' or 'College'  in resume_text: # Check for 'Education' in the resume text
                     resume_score = resume_score + 12
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added Education Details</h4>''',unsafe_allow_html=True)
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Education. It will give Your Qualification level to the recruiter</h4>''',unsafe_allow_html=True)
 
-                if 'EXPERIENCE' in resume_text:
+                if 'EXPERIENCE' in resume_text: # Check for 'EXPERIENCE' in the resume text
                     resume_score = resume_score + 16
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added Experience</h4>''',unsafe_allow_html=True)
                 elif 'Experience' in resume_text:
@@ -476,7 +476,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Experience. It will help you to stand out from crowd</h4>''',unsafe_allow_html=True)
 
-                if 'INTERNSHIPS'  in resume_text:
+                if 'INTERNSHIPS'  in resume_text: # Check for 'INTERNSHIPS' in the resume text
                     resume_score = resume_score + 6
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added Internships</h4>''',unsafe_allow_html=True)
                 elif 'INTERNSHIP'  in resume_text:
@@ -491,7 +491,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Internships. It will help you to stand out from crowd</h4>''',unsafe_allow_html=True)
 
-                if 'SKILLS'  in resume_text:
+                if 'SKILLS'  in resume_text: # Check for 'SKILLS' in the resume text
                     resume_score = resume_score + 7
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added Skills</h4>''',unsafe_allow_html=True)
                 elif 'SKILL'  in resume_text:
@@ -506,7 +506,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Skills. It will help you a lot</h4>''',unsafe_allow_html=True)
 
-                if 'HOBBIES' in resume_text:
+                if 'HOBBIES' in resume_text: # Check for 'HOBBIES' in the resume text
                     resume_score = resume_score + 4
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added your Hobbies</h4>''',unsafe_allow_html=True)
                 elif 'Hobbies' in resume_text:
@@ -515,7 +515,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Hobbies. It will show your personality to the Recruiters and give the assurance that you are fit for this role or not.</h4>''',unsafe_allow_html=True)
 
-                if 'INTERESTS'in resume_text:
+                if 'INTERESTS'in resume_text: # Check for 'INTERESTS' in the resume text
                     resume_score = resume_score + 5
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added your Interest</h4>''',unsafe_allow_html=True)
                 elif 'Interests'in resume_text:
@@ -524,7 +524,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Interest. It will show your interest other that job.</h4>''',unsafe_allow_html=True)
 
-                if 'ACHIEVEMENTS' in resume_text:
+                if 'ACHIEVEMENTS' in resume_text: # Check for 'ACHIEVEMENTS' in the resume text
                     resume_score = resume_score + 13
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added your Achievements </h4>''',unsafe_allow_html=True)
                 elif 'Achievements' in resume_text:
@@ -533,7 +533,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Achievements. It will show that you are capable for the required position.</h4>''',unsafe_allow_html=True)
 
-                if 'CERTIFICATIONS' in resume_text:
+                if 'CERTIFICATIONS' in resume_text: # Check for 'CERTIFICATIONS' in the resume text
                     resume_score = resume_score + 12
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added your Certifications </h4>''',unsafe_allow_html=True)
                 elif 'Certifications' in resume_text:
@@ -545,7 +545,7 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Certifications. It will show that you have done some specialization for the required position.</h4>''',unsafe_allow_html=True)
 
-                if 'PROJECTS' in resume_text:
+                if 'PROJECTS' in resume_text: # Check for 'PROJECTS' in the resume text
                     resume_score = resume_score + 19
                     st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] Awesome! You have added your Projects</h4>''',unsafe_allow_html=True)
                 elif 'PROJECT' in resume_text:
@@ -560,9 +560,9 @@ def run():
                 else:
                     st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] Please add Projects. It will show that you have done work related the required position or not.</h4>''',unsafe_allow_html=True)
 
-                st.subheader("**Resume Score 📝**")
+                st.subheader("**Overall Rating**") # 
                 
-                st.markdown(
+                st.markdown( # Progress Bar Styling
                     """
                     <style>
                         .stProgress > div > div > div > div {
@@ -572,17 +572,15 @@ def run():
                     unsafe_allow_html=True,
                 )
 
-                ### Score Bar
-                my_bar = st.progress(0)
-                score = 0
+                # Score Bar: Visualizes the resume score calculation with a progress bar, incrementing according to the resume score.
+                my_bar = st.progress(0) # Initialize the progress bar
+                score = 0 # Initialize the score
                 for percent_complete in range(resume_score):
                     score +=1
                     time.sleep(0.1)
-                    my_bar.progress(percent_complete + 1)
-
-                ### Score
-                st.success('** Your Resume Writing Score: ' + str(score)+'**')
-                st.warning("** Note: This score is calculated based on the content that you have in your Resume. **")
+                    my_bar.progress(percent_complete + 1) # Increment the progress bar
+                st.success('** Your Resume Writing Score: ' + str(score)+'**') # Display the resume score
+                st.warning("** Note: This score is calculated based on the content that you have in your Resume. **") # Display a note about the resume score
 
                 # print(str(sec_token), str(ip_add), (host_name), (dev_user), (os_name_ver), (latlong), (city), (state), (country), (act_name), (act_mail), (act_mob), resume_data['name'], resume_data['email'], str(resume_score), timestamp, str(resume_data['no_of_pages']), reco_field, cand_level, str(resume_data['skills']), str(recommended_skills), str(rec_course), pdf_name)
 
@@ -598,12 +596,12 @@ def run():
                 insert_data(str(sec_token), str(ip_add), (host_name), (dev_user), (os_name_ver), (latlong), (city), (state), (country), (act_name), (act_mail), (act_mob), resume_data['name'], resume_data['email'], str(resume_score), timestamp, str(resume_data['no_of_pages']), reco_field, cand_level, str(resume_data['skills']), str(recommended_skills), str(rec_course), pdf_name)
 
                 ## Recommending Resume Writing Video
-                # st.header("**Bonus Video for Resume Writing Tips💡**")
+                # st.header("**Bonus Video for Resume Writing Tip**")
                 # resume_vid = random.choice(resume_videos)
                 # st.video(resume_vid)
 
                 ## Recommending Interview Preparation Video
-                # st.header("**Bonus Video for Interview Tips💡**")
+                # st.header("**Bonus Video for Interview Tips**")
                 # interview_vid = random.choice(interview_videos)
                 # st.video(interview_vid)
 
@@ -611,150 +609,119 @@ def run():
                 st.balloons()
 
             else:
-                st.error('Something went wrong..')                
+                st.error('Are you sure that was a .PDF file... And resume? :)')                
 
 
-    ###### CODE FOR FEEDBACK SIDE ######
+    # Feedback Section: Provides an interface for users to submit feedback, including their name, email, rating, and comments.
     elif choice == 'Provide Feedback':   
-        
-        # timestamp 
         ts = time.time()
         cur_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
         cur_time = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
         timestamp = str(cur_date+'_'+cur_time)
 
-        # Feedback Form
+        # Feedback Form: Styled form for users to submit feedback, featuring custom input fields and a submit button.
         with st.form("my_form"):
             st.write("Feedback form")            
             feed_name = st.text_input('Name')
             feed_email = st.text_input('Email')
-            feed_score = st.slider('Rate Us From 1 - 10', 1, 10)
-            comments = st.text_input('Comments')
+            feed_score = st.slider('Rate Us From 1 - 10', 1, 10) # Slider for user feedback rating
+            comments = st.text_input('Comments') # Text input for user feedback comments
             Timestamp = timestamp        
-            submitted = st.form_submit_button("Submit")
+            submitted = st.form_submit_button("Submit") # Submit button for the feedback form
             if submitted:
-                ## Calling insertf_data to add dat into user feedback
                 insertf_data(feed_name,feed_email,feed_score,comments,Timestamp)    
-                ## Success Message 
                 st.success("Thanks! Your Feedback was submitted. Watch for an email from us soon! We appreciate your feedback.") 
-                ## On Successful Submit
                 st.balloons()    
 
-
-        # query to fetch data from user feedback table
+        # Fetching Feedback Data: Retrieves feedback data from the database and displays it in a table for users to view.
         query = 'select * from user_feedback'        
         plotfeed_data = pd.read_sql(query, connection)                        
 
 
-        # fetching feed_score from the query and getting the unique values and total value count 
+        # Analyzing All the Data's in pie charts. Fetching feed_score from the query and getting the unique values and total value count.
         labels = plotfeed_data.feed_score.unique()
         values = plotfeed_data.feed_score.value_counts()
 
-
-        # plotting pie chart for user ratings
+        # Pie chart for user ratings. Displays a pie chart of user feedback ratings, providing a visual representation of the feedback data.
         st.subheader("**Past User Rating's**")
         fig = px.pie(values=values, names=labels, title="Chart of User Rating Score From 1 - 5", color_discrete_sequence=px.colors.sequential.Aggrnyl)
         st.plotly_chart(fig)
 
 
-        #  Fetching Comment History
+        # Fetching Predicted_Field from the query and getting the unique values and total value count. 
         cursor.execute('select feed_name, comments from user_feedback')
         plfeed_cmt_data = cursor.fetchall()
-
         st.subheader("**User Comment's**")
         dff = pd.DataFrame(plfeed_cmt_data, columns=['User', 'Comment'])
         st.dataframe(dff, width=1000)
 
     
-    ###### CODE FOR ABOUT PAGE ######
+    # About App Section: Provides an overview of the AI Resume Analyzer tool, including its purpose, features, and benefits.
+    # This section is designed to inform users about the app's capabilities and encourage engagement with the tool.
     elif choice == 'About App':   
-
-        st.subheader("**About The Tool - AI RESUME ANALYZER**")
-
+        st.subheader("**About The Tool - AIResume Helper**")
         st.markdown('''
-
         <p align='justify'>
            Under Construction </p>
-
         ''',unsafe_allow_html=True)  
 
 
-    ###### CODE FOR ADMIN SIDE (ADMIN) ######
+    # Admin Login Section: Provides an interface for admin users to log in and access the admin dashboard.
     else:
         st.success('Welcome to Admin Side')
-
-        #  Admin Login
         ad_user = st.text_input("Username")
         ad_password = st.text_input("Password", type='password')
-
         if st.button('Login'):
-            
-            ## Credentials 
-            if ad_user == 'admin' and ad_password == 'admin@resume-analyzer':
-                
-                ### Fetch miscellaneous data from user_data(table) and convert it into dataframe
+        
+            # Admin Credentials: Validates the admin user's credentials and grants access to the admin dashboard.
+            if ad_user == 'root' and ad_password == '3A9mkqa9!!': # Admin credentials. # Password is hashed using sha256.
                 cursor.execute('''SELECT ID, ip_add, resume_score, convert(Predicted_Field using utf8), convert(User_level using utf8), city, state, country from user_data''')
                 datanalys = cursor.fetchall()
                 plot_data = pd.DataFrame(datanalys, columns=['Idt', 'IP_add', 'resume_score', 'Predicted_Field', 'User_Level', 'City', 'State', 'Country'])
-                
-                ### Total Users Count with a Welcome Message
                 values = plot_data.Idt.count()
-                st.success(f"Hi, {resume_data['name'].split()[0]}")               
-                
-                ### Fetch user data from user_data(table) and convert it into dataframe
+                st.success(f"Hi, {resume_data['name'].split()[0]}")    # Display the admin user's name           
                 cursor.execute('''SELECT ID, sec_token, ip_add, act_name, act_mail, act_mob, convert(Predicted_Field using utf8), Timestamp, Name, Email_ID, resume_score, Page_no, pdf_name, convert(User_level using utf8), convert(Actual_skills using utf8), convert(Recommended_skills using utf8), convert(Recommended_courses using utf8), city, state, country, latlong, os_name_ver, host_name, dev_user from user_data''')
-                data = cursor.fetchall()                
+                data = cursor.fetchall() # Fetching data from user_data(table) and convert it into dataframe         
 
-                st.header("**User's Data**")
+                st.header("**User's Data**") # Display the user data in a table
                 df = pd.DataFrame(data, columns=['ID', 'Token', 'IP Address', 'Name', 'Mail', 'Mobile Number', 'Predicted Field', 'Timestamp',
                                                  'Predicted Name', 'Predicted Mail', 'Resume Score', 'Total Page',  'File Name',   
                                                  'User Level', 'Actual Skills', 'Recommended Skills', 'Recommended Course',
                                                  'City', 'State', 'Country', 'Lat Long', 'Server OS', 'Server Name', 'Server User',])
+                st.dataframe(df) # Show the dataFrame.
                 
-                ### Viewing the dataframe
-                st.dataframe(df)
-                
-                ### Downloading Report of user_data in csv file
+                # Downloading the User Data in CSV Format. 
                 st.markdown(get_csv_download_link(df,'User_Data.csv','Download Report'), unsafe_allow_html=True)
 
-                ### Fetch feedback data from user_feedback(table) and convert it into dataframe
+                # Fetching Feedback Data: Retrieves feedback data from the database and displays it in a table for users to view.
                 cursor.execute('''SELECT * from user_feedback''')
                 data = cursor.fetchall()
-
                 st.header("**User's Feedback Data**")
                 df = pd.DataFrame(data, columns=['ID', 'Name', 'Email', 'Feedback Score', 'Comments', 'Timestamp'])
                 st.dataframe(df)
 
-                ### query to fetch data from user_feedback(table)
+                # Downloading the Feedback Data in CSV Format. 
                 query = 'select * from user_feedback'
-                plotfeed_data = pd.read_sql(query, connection)                        
-
-                ### Analyzing All the Data's in pie charts
-
-                # fetching feed_score from the query and getting the unique values and total value count 
-                labels = plotfeed_data.feed_score.unique()
-                values = plotfeed_data.feed_score.value_counts()
-                
-                # Pie chart for user ratings
+                plotfeed_data = pd.read_sql(query, connection)  # Fetching feedback data from the database                      
+                labels = plotfeed_data.feed_score.unique() # Fetching feed_score from the query and getting the unique values and total value count
+                values = plotfeed_data.feed_score.value_counts() # Pie chart for user ratings
                 st.subheader("**User Rating's**")
+                
                 fig = px.pie(values=values, names=labels, title="Chart of User Rating Score From 1 - 5 🤗", color_discrete_sequence=px.colors.sequential.Aggrnyl)
-                st.plotly_chart(fig)
-
-                # fetching Predicted_Field from the query and getting the unique values and total value count                 
-                labels = plot_data.Predicted_Field.unique()
-                values = plot_data.Predicted_Field.value_counts()
-
-                # Pie chart for predicted field recommendations
-                st.subheader("**Pie-Chart for Predicted Field Recommendation**")
+                st.plotly_chart(fig) # Display the pie chart      
+                          
+                # Downloading the Feedback Data in CSV Format.
+                labels = plot_data.Predicted_Field.unique() # Fetching Predicted_Field from the query and getting the unique values and total value count
+                values = plot_data.Predicted_Field.value_counts() # Pie chart for predicted field recommendations
+                st.subheader("**Pie-Chart for Predicted Field Recommendation**") # Pie chart for predicted field recommendations
+                
                 fig = px.pie(df, values=values, names=labels, title='Predicted Field according to the Skills 👽', color_discrete_sequence=px.colors.sequential.Aggrnyl_r)
-                st.plotly_chart(fig)
-
-                # fetching User_Level from the query and getting the unique values and total value count                 
-                labels = plot_data.User_Level.unique()
-                values = plot_data.User_Level.value_counts()
-
-                # Pie chart for User's👨‍💻 Experienced Level
-                st.subheader("**Pie-Chart for User's Experienced Level**")
+                st.plotly_chart(fig)  
+                
+                labels = plot_data.User_Level.unique() # Fetching User_Level from the query and getting the unique values and total value count
+                values = plot_data.User_Level.value_counts() # Pie chart for user experience level
+                st.subheader("**Pie-Chart for User's Experienced Level**") 
+               
                 fig = px.pie(df, values=values, names=labels, title="Pie-Chart 📈 for User's 👨‍💻 Experienced Level", color_discrete_sequence=px.colors.sequential.RdBu)
                 st.plotly_chart(fig)
 
@@ -767,16 +734,16 @@ def run():
                 fig = px.pie(df, values=values, names=labels, title='From 1 to 100 💯', color_discrete_sequence=px.colors.sequential.Agsunset)
                 st.plotly_chart(fig)
 
-                # fetching IP_add from the query and getting the unique values and total value count 
+                # fetching IP Address from the query and getting the unique values and total value count.
                 labels = plot_data.IP_add.unique()
                 values = plot_data.IP_add.value_counts()
 
-                # Pie chart for Users
+                # Pie chart for IP Address; Users;.
                 st.subheader("**Pie-Chart for Users App Used Count**")
                 fig = px.pie(df, values=values, names=labels, title='Usage Based On IP Address 👥', color_discrete_sequence=px.colors.sequential.matter_r)
                 st.plotly_chart(fig)
 
-                # fetching City from the query and getting the unique values and total value count 
+                # fetching City from the query and getting the unique values and total value count.
                 labels = plot_data.City.unique()
                 values = plot_data.City.value_counts()
 
@@ -794,7 +761,7 @@ def run():
                 fig = px.pie(df, values=values, names=labels, title='Usage Based on State 🚉', color_discrete_sequence=px.colors.sequential.PuBu_r)
                 st.plotly_chart(fig)
 
-                # fetching Country from the query and getting the unique values and total value count 
+                # fetching Country from the query and getting the unique values and total value count
                 labels = plot_data.Country.unique()
                 values = plot_data.Country.value_counts()
 
@@ -803,9 +770,9 @@ def run():
                 fig = px.pie(df, values=values, names=labels, title='Usage Based on Country 🌏', color_discrete_sequence=px.colors.sequential.Purpor_r)
                 st.plotly_chart(fig)
 
-            ## For Wrong Credentials
+            # Invalid Admin Credentials: Displays an error message if the admin user's credentials are incorrect.
             else:
                 st.error("Wrong ID & Password Provided")
 
-# Calling the main (run()) function to make the whole process run
+# Now we run the main function to start the app. May the force be with you.
 run()
