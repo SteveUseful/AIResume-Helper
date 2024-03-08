@@ -1,3 +1,5 @@
+# This file contains the list of courses for each category.    
+# List of data science-related courses with their names and URLs
 ds_course = [['Machine Learning Crash Course by Google [Free]', 'https://developers.google.com/machine-learning/crash-course'],
              ['Machine Learning A-Z by Udemy','https://www.udemy.com/course/machinelearning/'],
              ['Machine Learning by Andrew NG','https://www.coursera.org/learn/machine-learning'],
@@ -9,6 +11,7 @@ ds_course = [['Machine Learning Crash Course by Google [Free]', 'https://develop
              ['Introduction to Data Science','https://www.udacity.com/course/introduction-to-data-science--cd0017'],
              ['Intro to Machine Learning with TensorFlow','https://www.udacity.com/course/intro-to-machine-learning-with-tensorflow-nanodegree--nd230']]
 
+# List of web development-related courses with their names and URLs
 web_course = [['Django Crash course [Free]','https://youtu.be/e1IyzVyrLSU'],
               ['Python and Django Full Stack Web Developer Bootcamp','https://www.udemy.com/course/python-and-django-full-stack-web-developer-bootcamp'],
               ['React Crash Course [Free]','https://youtu.be/Dorf8i6lCuk'],
@@ -20,6 +23,7 @@ web_course = [['Django Crash course [Free]','https://youtu.be/e1IyzVyrLSU'],
               ['Front End Web Developer by Udacity','https://www.udacity.com/course/front-end-web-developer-nanodegree--nd0011'],
               ['Become a React Developer by Udacity','https://www.udacity.com/course/react-nanodegree--nd019']]
 
+# List of Android app development-related courses with their names and URLs
 android_course = [['Android Development for Beginners [Free]','https://youtu.be/fis26HvvDII'],
                   ['Android App Development Specialization','https://www.coursera.org/specializations/android-app-development'],
                   ['Associate Android Developer Certification','https://grow.google/androiddev/#?modal_active=none'],
@@ -31,6 +35,7 @@ android_course = [['Android Development for Beginners [Free]','https://youtu.be/
                   ['Flutter & Dart - The Complete Flutter App Development Course','https://www.udemy.com/course/flutter-dart-the-complete-flutter-app-development-course/'],
                   ['Flutter App Development Course [Free]','https://youtu.be/rZLR5olMR64']]
 
+# List of iOS app development-related courses with their names and URLs
 ios_course = [['IOS App Development by LinkedIn','https://www.linkedin.com/learning/subscription/topics/ios'],
               ['iOS & Swift - The Complete iOS App Development Bootcamp','https://www.udemy.com/course/ios-13-app-development-bootcamp/'],
               ['Become an iOS Developer','https://www.udacity.com/course/ios-developer-nanodegree--nd003'],
@@ -42,6 +47,7 @@ ios_course = [['IOS App Development by LinkedIn','https://www.linkedin.com/learn
               ['Swift Tutorial - Full Course for Beginners [Free]','https://youtu.be/comQ1-x2a1Q'],
               ['Learn Swift Fast - [Free]','https://youtu.be/FcsY1YPBwzQ']]
 
+# List of UI/UX design-related courses with their names and URLs
 uiux_course = [['Google UX Design Professional Certificate','https://www.coursera.org/professional-certificates/google-ux-design'],
                ['UI / UX Design Specialization','https://www.coursera.org/specializations/ui-ux-design'],
                ['The Complete App Design Course - UX, UI and Design Thinking','https://www.udemy.com/course/the-complete-app-design-course-ux-and-ui-design/'],
@@ -53,6 +59,7 @@ uiux_course = [['Google UX Design Professional Certificate','https://www.courser
                ['Adobe XD for Beginners [Free]','https://youtu.be/WEljsc2jorI'],
                ['Adobe XD in Simple Way','https://learnux.io/course/adobe-xd']]
 
+# List of ethical hacking-related courses with their names and URLs
 resume_videos = [ 'https://youtu.be/Tt08KmFfIYQ','https://youtu.be/y8YH0Qbu5h4',
                   'https://youtu.be/u75hUSShvnc','https://youtu.be/BYUy1yvjHxE',
                   'https://youtu.be/KFaugkGVeNQ','https://youtu.be/3agP4x8LYFM',
@@ -60,6 +67,7 @@ resume_videos = [ 'https://youtu.be/Tt08KmFfIYQ','https://youtu.be/y8YH0Qbu5h4',
                   'https://youtu.be/C7pNLIq3kOI','https://youtu.be/xpaz7nrNmXA',
                   'https://youtu.be/aKjsy-b00QM','https://youtu.be/ciIkiWwZnlc']
 
+# List of ethical hacking-related courses with their names and URLs
 interview_videos = ['https://youtu.be/HG68Ymazo18','https://youtu.be/BOvAAoxM4vg',
                     'https://youtu.be/KukmClH1KoA','https://youtu.be/7_aAicmPB3A',
                     'https://youtu.be/1mHjMNZZvFo','https://youtu.be/WfdtKbAJOmE',
