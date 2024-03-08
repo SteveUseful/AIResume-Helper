@@ -1,5 +1,13 @@
-###### Packages Used ######
-import streamlit as st # core package used in this project
+# Import Section: Essential libraries and packages for web app development, data manipulation, and visualization
+# This section includes:
+# - Streamlit for creating and deploying web apps
+# - Pandas for data analysis and manipulation
+# - Various utilities (base64, os, socket, platform, secrets, io, random) for handling files, generating secrets, and system operations
+# - Database connectivity with pymysql
+# - Geolocation services (geocoder, geopy) for location-based functionalities
+# - Plotly (express and graph_objects) for generating interactive visualizations, specifically used in the admin session to provide insights through charts and graphs
+
+import streamlit as st 
 import pandas as pd
 import base64, random
 import time,datetime
@@ -14,7 +22,13 @@ import plotly.express as px # to create visualisations at the admin session
 import plotly.graph_objects as go
 from geopy.geocoders import Nominatim
 
-# libraries used to parse the pdf files
+# PDF Parsing and Additional Utilities Import Section:
+# - pyresparser for extracting data from resumes
+# - PDFMiner3 components (layout, page, interp, converter) for detailed PDF parsing and text extraction
+# - streamlit_tags for interactive tag inputs in the Streamlit app
+# - PIL (Python Imaging Library) for image processing tasks
+# This collection of libraries is essential for handling and parsing PDF files to extract and manipulate data, as well as for enhancing user interaction and processing.
+
 from pyresparser import ResumeParser
 from pdfminer3.layout import LAParams, LTTextBox
 from pdfminer3.pdfpage import PDFPage
@@ -23,99 +37,80 @@ from pdfminer3.pdfinterp import PDFPageInterpreter
 from pdfminer3.converter import TextConverter
 from streamlit_tags import st_tags
 from PIL import Image
-# pre stored data for prediction purposes
+
+# Data & NLP Imports:
+# - Course & video modules for educational content and prep resources.
+# - NLTK for processing text data, including downloading stopwords for text analysis.
+# Supports content delivery and enhances prediction capabilities.
+
 from Courses import ds_course,web_course,android_course,ios_course,uiux_course,resume_videos,interview_videos
 import nltk
 nltk.download('stopwords')
 
-
-###### Preprocessing functions ######
-"""
-Generate a downloadable CSV link for an input DataFrame.
-This function converts a given DataFrame to CSV format, encodes it into base64 to ensure proper formatting and create a web-friendly download link, 
-which can be embedded in an HTML document.
-Parameters:
-- df (pd.DataFrame): The DataFrame to be converted into a CSV download link.
-- filename (str): The name of the file when downloaded.#     - text (str): The text to be displayed as the download link.
-Returns:
-- str: An 'a' tag element as a string that allows for downloading the CSV when clicked.
-"""
-
+# CSV Download Link Generator Function:
+# Transforms DataFrame to a web-friendly CSV download link by encoding it in base64.
+# Parameters: df (DataFrame), filename (str, download file name), text (str, link display text).
+# Returns: Downloadable HTML 'a' tag with the CSV content.
 def get_csv_download_link(df, filename, text):
-    # Convert the DataFrame to CSV format without the index
-    csv = df.to_csv(index=False)
-    # Encode the CSV string to base64 to make it web-safe
-    b64 = base64.b64encode(csv.encode()).decode()
-     # Create the HTML anchor ('a') tag to serve as the downloadable link
-    href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">{text}</a>'
+    csv = df.to_csv(index=False) # Convert the DataFrame to CSV format without the index
+    b64 = base64.b64encode(csv.encode()).decode() # Encode the CSV string to base64 to make it web-safe
+    href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">{text}</a>' # Create the HTML anchor ('a') tag to serve as the downloadable link
     return href
     
-"""
- Read the content of a PDF file and return it as a text string.
-    This function uses the PDFResourceManager and PDFPageInterpreter from the PDFMiner library
-    to process each page of the PDF file and extract the text.
-    Args:
-    - file_path (str): The file system path to the PDF file.
-    Returns:
-    - str: The extracted text from the PDF.
-"""
+# PDF Content Extractor Function:
+# Initialize PDF resource manager, converter, and interpreter.
+# Reads PDF file content and returns it as a text string using PDFMiner library components.
+# Args: file_path (str, path to the PDF file).
+# Returns: Extracted text (str) from the PDF.
 def pdf_reader(file_path):
     with open(file_path, 'rb') as fh:
-        # Initialize PDF resource manager, converter, and interpreter
-        resource_manager = PDFResourceManager()
+        resource_manager = PDFResourceManager() 
         fake_file_handle = io.StringIO()
         converter = TextConverter(resource_manager, fake_file_handle, laparams=LAParams())
         page_interpreter = PDFPageInterpreter(resource_manager, converter)
-        # Process each page from the PDF and extract text
-        for page in PDFPage.get_pages(fh, caching=True, check_extractable=True):
+        for page in PDFPage.get_pages(fh, caching=True, check_extractable=True):  # Process each page from the PDF and extract text
             page_interpreter.process_page(page)
-            
-        text = fake_file_handle.getvalue()
-
-        # Clean up converter and file handle resources
-        converter.close()
-        fake_file_handle.close()
-
+        text = fake_file_handle.getvalue() # Get the text from the fake file handle
+        converter.close() # Close the converter and file handle
+        fake_file_handle.close() # Close the file handle
     return text
 
+# PDF Display Function:
+# Embeds and displays a PDF file in a Streamlit app as an iframe.
+# Utilizes base64 encoding to safely embed the PDF content for web display. Args: file_path (str, path to the PDF file).
 def show_pdf(file_path):
     with open(file_path, "rb") as f:
         base64_pdf = base64.b64encode(f.read()).decode('utf-8')
     pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
     st.markdown(pdf_display, unsafe_allow_html=True)
 
+# Course Recommender Function: Displays a slider for selecting the number of course recommendations and outputs selected courses from a given list.
 def course_recommender(course_list):
     st.subheader("**Courses & Certificates Recommendations 👨‍🎓**")
-    no_of_reco = st.slider('Choose Number of Course Recommendations:', 1, 10, 5)
+    no_of_reco = st.slider('Choose Number of Course Recommendations:', 1, 10, 5) # Slider for selecting the number of recommendations
     rec_courses = []
-    
-    for i, course in enumerate(course_list[:no_of_reco]):
+    for i, course in enumerate(course_list[:no_of_reco]): # Iterate through the recommended courses and display them
         c_name, c_link = course
-        st.markdown(f"({i+1}) [{c_name}]({c_link})")
-        rec_courses.append(c_name)
-    
-    return rec_courses
+        st.markdown(f"({i+1}) [{c_name}]({c_link})") # Display the course name and link
+        rec_courses.append(c_name) # Append the course name to the list of recommended courses
+    return rec_courses 
 
+# Database Connection Setup: Establishes a connection to a MySQL database using pymysql for SQL operations.
+connection = pymysql.connect(host='localhost',user='root',password='3A9mkqa9!!',db='cv') # Establish a connection to the database
+cursor = connection.cursor() # Create a cursor object to execute SQL queries
 
-###### Database Stuffs ######
-
-
-# sql connector
-connection = pymysql.connect(host='localhost',user='root',password='3A9mkqa9!!',db='cv')
-cursor = connection.cursor()
-
-
-# inserting miscellaneous data, fetched results, prediction and recommendation into user_data table
+# Data Insertion Function: Inserts user data into the 'user_data' table of the database. 
+# Handles miscellaneous data, fetched results, predictions, and recommendations.
 def insert_data(sec_token,ip_add,host_name,dev_user,os_name_ver,latlong,city,state,country,act_name,act_mail,act_mob,name,email,res_score,timestamp,no_of_pages,reco_field,cand_level,skills,recommended_skills,courses,pdf_name):
-    DB_table_name = 'user_data'
-    insert_sql = "insert into " + DB_table_name + """
+    DB_table_name = 'user_data' # Table name for user data
+    insert_sql = "insert into " + DB_table_name + """ 
     values (0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
     rec_values = (str(sec_token),str(ip_add),host_name,dev_user,os_name_ver,str(latlong),city,state,country,act_name,act_mail,act_mob,name,email,str(res_score),timestamp,str(no_of_pages),reco_field,cand_level,skills,recommended_skills,courses,pdf_name)
-    cursor.execute(insert_sql, rec_values)
+    cursor.execute(insert_sql, rec_values) # Execute the SQL insert operation
     connection.commit()
 
-
-# inserting feedback data into user_feedback table
+# Feedback Data Insertion Function: Inserts user feedback into the 'user_feedback' table. 
+# Captures feedback name, email, score, comments, and timestamp.
 def insertf_data(feed_name,feed_email,feed_score,comments,Timestamp):
     DBf_table_name = 'user_feedback'
     insertfeed_sql = "insert into " + DBf_table_name + """
@@ -124,10 +119,8 @@ def insertf_data(feed_name,feed_email,feed_score,comments,Timestamp):
     cursor.execute(insertfeed_sql, rec_values)
     connection.commit()
 
-
-####### Streamlit page configuration######
-
-
+# Begin Streamlit Configuration
+# Streamlit Style Customization: Injects CSS for UI enhancements and sets app title and icon.
 def inject_custom_css():
     st.markdown("""
     <style>
@@ -183,48 +176,26 @@ def inject_custom_css():
     </style>
     """, unsafe_allow_html=True)
 
-
-    
-
-st.set_page_config(page_title="The Dawn of ResumeAI", page_icon='./Logo/recommend.png')
+st.set_page_config(page_title="The Dawn of ResumeAI", page_icon='./Logo/recommend.png') # Set the app title and icon
 
 
-
-###### Main function ########
-
-
+# Main App Runner: Initializes the app's UI, including custom styles, logo display, and navigation sidebar.
+# Users can navigate through different app functionalities like submitting resumes, providing feedback, learning about the app, or accessing admin features
 def run():
-    inject_custom_css()  # Apply the custom CSS for styling
-
-    # Display the logo centrally above everything including the sidebar
+    inject_custom_css()  
     img = Image.open('./Logo/RESUM.png')
-    st.image(img, use_column_width=False, width=300)  # Adjust width as necessary
-
-    # Defining sidebar navigation
-    st.sidebar.title("Quick Nav")
+    st.image(img, use_column_width=False, width=300) 
+    st.sidebar.title("Quick Nav") # Sidebar title for quick navigation
     activities = ["Submit Resume", "Provide Feedback", "About App", "Admin"]
     choice = st.sidebar.selectbox("What would you like to do?", activities)
 
-    
-    # Sidebar
-   # st.sidebar.markdown(link, unsafe_allow_html=True)
+    # Sidebar Options: Submit Resume, Provide Feedback, About App, Admin
     st.sidebar.markdown('''
-        ''', unsafe_allow_html=True)
+        ''', unsafe_allow_html=True) # Empty markdown for spacing
 
-
-
-
-
-
-    ###### Creating Database and Table ######
-
-
-    # Create the DB
-    db_sql = """CREATE DATABASE IF NOT EXISTS CV;"""
+# Database Initialization: Executes SQL to create a new database 'CV' if it doesn't already exist.
+    db_sql = """CREATE DATABASE IF NOT EXISTS CV;""" 
     cursor.execute(db_sql)
-
-
-    # Create table user_data and user_feedback
     DB_table_name = 'user_data'
     table_sql = "CREATE TABLE IF NOT EXISTS " + DB_table_name + """
                     (ID INT NOT NULL AUTO_INCREMENT,
@@ -254,9 +225,10 @@ def run():
                     PRIMARY KEY (ID)
                     );
                 """
-    cursor.execute(table_sql)
+    cursor.execute(table_sql) # Execute the SQL to create the table
 
-
+# User Feedback Table Creation: Constructs a new table 'user_feedback' in the database if it doesn't exist, 
+# designed to store feedback entries with fields for name, email, score, comments, and timestamp.
     DBf_table_name = 'user_feedback'
     tablef_sql = "CREATE TABLE IF NOT EXISTS " + DBf_table_name + """
                     (ID INT NOT NULL AUTO_INCREMENT,
@@ -268,21 +240,20 @@ def run():
                         PRIMARY KEY (ID)
                     );
                 """
-    cursor.execute(tablef_sql)
+    cursor.execute(tablef_sql) # Execute the SQL to create the table
 
 
-    ###### CODE FOR CLIENT SIDE (USER) ######
-
+# Client-Side Interface: "Submit Resume" Feature
+# Provides an interactive interface for users to submit their resumes. It captures essential information 
+# including the user's name, email, contact number, and generates a unique security token for the session. 
+# Additionally, it collects geolocation and system information to enhance user experience and security.
     if choice == 'Submit Resume':
         st.header("**Submit Your Resume**")
         st.markdown("<div class='info-box'>Please fill in your details, let's start with your resume.</div>", unsafe_allow_html=True)
-        
-        # Collecting Miscellaneous Information
         act_name = st.text_input('Your Name*')
         act_mail = st.text_input('Your E-Mail Address*')
         act_mob  = st.text_input('Best Contact Number*')
         sec_token = secrets.token_urlsafe(12)
-        # Geolocation and system info collection remains unchanged
         host_name = socket.gethostname()
         ip_add = socket.gethostbyname(host_name)
         dev_user = os.getlogin()
@@ -297,59 +268,41 @@ def run():
         country = address.get('country', '')  
 
 
-        # Upload Resume section with updated styling
-        st.markdown("<h5 style='text-align: left; color: #021659;'>Let's start with your resume.</h5>", unsafe_allow_html=True)
-
-        # File upload in PDF format
-        pdf_file = st.file_uploader("*Please use Resumes in PDF format only.", type=["pdf"])
+# Resume Upload Prompt: Styled section for users to upload their resume, featuring customized text alignment and color for enhanced visibility.
+        st.markdown("<h5 style='text-align: left; color: #021659;'>Let's start with your resume.</h5>", unsafe_allow_html=True) # Customized text alignment and color
+        pdf_file = st.file_uploader("*Please use Resumes in PDF format only.", type=["pdf"]) # File uploader for PDF resumes
         if pdf_file is not None:
             with st.spinner('Contacting Bots...'):
-                time.sleep(4)
+                time.sleep(4) # Simulate a delay for the bot to process the resume
+            save_image_path = './Uploaded_Resumes/' + pdf_file.name # Save the uploaded PDF to a local directory
+            pdf_name = pdf_file.name # Get the name of the uploaded PDF file
+            with open(save_image_path, "wb") as f: # Write the uploaded PDF to the local directory
+                f.write(pdf_file.getbuffer()) # Write the PDF buffer to the file
+            show_pdf(save_image_path) # Display the uploaded PDF in the app
 
-            # Saving the uploaded resume to folder
-            save_image_path = './Uploaded_Resumes/' + pdf_file.name
-            pdf_name = pdf_file.name
-            with open(save_image_path, "wb") as f:
-                f.write(pdf_file.getbuffer())
-            show_pdf(save_image_path)
-
-            # Parsing and extracting whole resume
+# Resume Data Extraction and Display:
+# Utilizes ResumeParser for comprehensive data extraction from the uploaded resume, then presents a quick overview of the user's information.
+# The displayed info includes the user's name, email, contact number (if available), highest degree (if available), and the total number of pages in the resume.
+# This section is designed to provide immediate feedback and validation of the extracted data, enhancing user engagement with stylized presentation.
             resume_data = ResumeParser(save_image_path).get_extracted_data()
             if resume_data:
-                # Get the whole resume data into resume_text
-                resume_text = pdf_reader(save_image_path)
-
+                resume_text = pdf_reader(save_image_path) # Extract text from the uploaded PDF
                 st.header("**Now that was fast! Let's take a look at our results.**")
-                st.success(f"Hi, {resume_data['name'].split()[0]}")
-
-                # Display user's basic info with enhanced styling
-                st.markdown("<div class='info-box'>Your Basic Info</div>", unsafe_allow_html=True)
-
+                st.success(f"Hi, {resume_data['name'].split()[0]}") # Greet the user with their first name
+                st.markdown("<div class='info-box'>Your Basic Info</div>", unsafe_allow_html=True) # Customized info box for user data
                 col1, col2 = st.columns(2)
-                with col1:
+                with col1: # Display user data in two columns for better visibility
                     st.markdown(f"<div class='bubbly-text'>Name: {resume_data['name']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='bubbly-text'>Email: {resume_data['email']}</div>", unsafe_allow_html=True)
-
                 with col2:
                     if 'mobile_number' in resume_data:
-                        st.markdown(f"<div class='bubbly-text'>Contact: {resume_data['mobile_number']}</div>", unsafe_allow_html=True)
-                    if 'degree' in resume_data:
-                        # Check if 'degree' is iterable before joining
-                        degree_str = ", ".join(resume_data['degree']) if isinstance(resume_data['degree'], (list, tuple)) else str(resume_data['degree'])
-                        st.markdown(f"<div class='bubbly-text'>Degree: {degree_str}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='bubbly-text'>Resume Pages: {resume_data['no_of_pages']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='bubbly-text'>Contact: {resume_data['mobile_number']}</div>", unsafe_allow_html=True) # Display the user's contact number if available
+                    if 'degree' in resume_data: # Display the highest degree if available
+                        degree_str = ", ".join(resume_data['degree']) if isinstance(resume_data['degree'], (list, tuple)) else str(resume_data['degree']) # Convert the degree to a string
+                        st.markdown(f"<div class='bubbly-text'>Degree: {degree_str}</div>", unsafe_allow_html=True) # Display the highest degree if available
+                    st.markdown(f"<div class='bubbly-text'>Resume Pages: {resume_data['no_of_pages']}</div>", unsafe_allow_html=True) # Display the total number of pages in the resume
+                st.markdown("---") # Horizontal rule for separation
 
-                st.markdown("---")
-
-                # Experience level prediction and skills analysis remains as is
-                # Your existing code for predicting experience level and skills analysis
-
-
-                
-                
-                
-                
-                
                 ## Predicting Candidate Experience Level 
 
                 ### Trying with different possibilities
