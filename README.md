@@ -38,8 +38,6 @@ pip install -r requirements.txt
 4. Usage
 To start the AIResume Helper application, run the following command in your terminal:
 
-bash
-Copy code
 streamlit run app.py
 
 To use the application, open your web browser and navigate to the address provided by Streamlit, typically http://localhost:8501.
