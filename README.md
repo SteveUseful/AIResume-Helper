@@ -1,59 +1,33 @@
-# AIResume Helper
+AIResume Helper Documentation Overview
+AIResume Helper is an AI-powered tool designed to assist job seekers in optimizing their resumes for a better job application process. It utilizes advanced algorithms to offer personalized enhancements and feedback.
 
-AIResume Helper is an innovative application designed to help job seekers optimize their resumes. Leveraging the power of artificial intelligence, AIResume Helper provides personalized recommendations for improving your resume, including suggested skills, courses, certifications, and tailored advice to enhance your job application process.
+Tutorial: Getting Started with AIResume Helper
+Objective: Guide new users through the initial setup and basic usage of AIResume Helper.
 
-## Features
+Installation Requirements: Ensure Python 3.8+ and Pip are installed.
+Setting Up: Clone the AIResume-Helper repository and install dependencies via Pip.
+First Use: Launch AIResume Helper using Streamlit and navigate to the provided localhost URL in your browser.
+For a step-by-step walkthrough, visit our Getting Started Tutorial.
 
-- **Resume Parsing**: Automatically parse and extract critical information from your resume, including education, work experience, skills, and certifications.
-- **Skill Recommendations**: Receive recommendations for adding skills based on your current resume and targeted job roles.
-- **Course Suggestions**: Get suggestions for courses and certifications that could make your resume stand out.
-- **Resume Scoring**: Evaluate your resume against industry standards to see where you stand.
-- **Interview Preparation**: Access to curated videos and tips for interview preparation.
-- **Customizable Templates**: Choose from various templates to give your resume a professional look.
+How-to Guide: Enhancing Your Resume
+Objective: Provide users with instructions on specific tasks to improve their resumes.
 
-## Getting Started
+Adding Skills: How to interpret skill recommendations and include them in your resume.
+Choosing Courses: Steps to add suggested courses and certifications to your profile.
+Customizing Your Resume: Selecting and applying different templates for a professional look.
+Explore detailed guides on these tasks here.
 
-### Prerequisites
+Explanation: Understanding AIResume Helper
+Objective: Offer insights into how AIResume Helper works and the benefits it provides.
 
-Before you begin, ensure you have met the following requirements:
-- Python 3.8 or later installed on your system.
-- Pip for installing Python packages.
+Resume Parsing: Explains the technology behind extracting information from resumes.
+Skill and Course Recommendations: Delves into how AIResume Helper analyzes your resume and suggests improvements.
+Gain a deeper understanding of AIResume Helper's features here.
 
-### Installation
+Reference: Technical Documentation
+Objective: Present detailed technical information and commands for advanced users.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Nirothor/AIResume-Helper.git
-
-2. Navigate to the cloned repository directory:
-bash
-Copy code
-cd AIResume-Helper
-
-3. Install the required Python packages:
-bash
-Copy code
-pip install -r requirements.txt
-
-4. Usage
-To start the AIResume Helper application, run the following command in your terminal:
-
-streamlit run app.py
-
-To use the application, open your web browser and navigate to the address provided by Streamlit, typically http://localhost:8501.
-
-Contributing
-We welcome contributions to AIResume Helper! If you have suggestions for improvements or bug fixes, please open an issue or submit a pull request.
-
-License
-AIResume Helper is released under the MIT License. See the LICENSE file for more details.
-
-Acknowledgments
-Special thanks to Streamlit for making interactive web app development accessible to data scientists and developers.
-
-Thanks to all contributors and users of AIResume Helper for your support and feedback.
-
-Contact
-
-If you have any questions or comments about AIResume Helper, please feel free to open an issue on GitHub.
-
+Installation Commands: Comprehensive commands for cloning the repository, installing dependencies, and launching the application.
+Contribution Guidelines: Instructions for contributing to the AIResume Helper project.
+License Information: Details of AIResume Helper's MIT License.
+For full reference material, visit our Technical Documentation.
