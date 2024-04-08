@@ -40,3 +40,20 @@ Gain a deeper understanding of AIResume Helper's features [here](#).
   git clone https://github.com/Nirothor/AIResume-Helper.git
   cd AIResume-Helper
   pip install -r requirements.txt
+
+  streamlit run app.py
+
+
+## Contributing
+We welcome contributions to AIResume Helper! If you have suggestions for improvements or bug fixes, please open an issue or submit a pull request.
+
+## License
+See the LICENSE file for more details.
+
+## Acknowledgments
+Special thanks to Streamlit for making interactive web app development accessible to data scientists and developers.
+
+Thanks to all contributors and users of AIResume Helper for your support and feedback.
+
+## Contact
+If you have any questions or comments about AIResume Helper, please feel free to open an issue.
