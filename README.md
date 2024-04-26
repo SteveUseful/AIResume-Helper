@@ -20,8 +20,6 @@ For a step-by-step walkthrough, visit our [Getting Started Tutorial](#).
 - **Choosing Courses:** Steps to add suggested courses and certifications to your profile.
 - **Customizing Your Resume:** Selecting and applying different templates for a professional look.
 
-Explore detailed guides on these tasks [here](#).
-
 ## Explanation: Understanding AIResume Helper
 
 **Objective:** Offer insights into how AIResume Helper works and the benefits it provides.
